@@ -9,11 +9,9 @@ We propose a novel targeted
 augmentation approach that operates on a class-by-class basis, and uses $L_1$-norm principal component analysis to characterize intra-class feature space
 geometry. The method identifies non-core (sparse) regions and
 allocates synthetic samples preferentially to these areas. The 
-method automatically: 1)~computes a class-specific 
-augmentation budget, and 2)~allocates synthetic samples, 
-generated via different augmentation techniques, 
-proportionally to the degree of intra-class data 
-scarcity. The proposed approach is data-driven and automated, requiring
+method automatically: 
+1) computes a class-specific augmentation budget, and
+2)~allocates synthetic samples, genrated via different augmentation techniques, in accordance with the degree of intra-class data scarcity. The proposed approach is data-driven and automated, requiring
 no manual parameter tuning, and is compatible with multiple
 synthetic data generation techniques. Extensive experiments on
 real-world datasets demonstrate that the proposed method
