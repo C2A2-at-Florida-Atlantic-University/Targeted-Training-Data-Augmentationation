@@ -1,57 +1,103 @@
-# Targeted-Training-Data-Augmentation
-Targeted Training Data Augmentation for Under-sampled Subspaces in Machine Learning Models
+# Targeted Training Data Augmentation for Under-sampled Subspaces
 
+A data-driven, automated augmentation framework that identifies and preferentially fills intra-class sparse regions in feature space, improving model performance in underrepresented regions without manual tuning.
 
+Many real-world datasets contain regions within classes where samples are sparse or poorly represented. These regions limit a model’s ability to learn stable decision boundaries. Traditional augmentation methods generate synthetic data uniformly across the dataset, ignoring these weak regions.
 
-> A data-driven, automated augmentation framework that identifies and preferentially fills intra-class sparse regions in feature space — no manual tuning required.
+This repository implements a targeted augmentation pipeline that focuses specifically on such under-sampled regions. The method operates on a class-by-class basis, uses L1-norm PCA to capture intra-class geometry, identifies non-core (sparse) samples, and generates synthetic data using TabDDPM. The final augmented dataset is constructed using a geometry-based selection criterion, and evaluation is performed on outlier-only test data to measure improvements in sparse regions.
 
----
-
-## Overview
-
-Many real-world datasets contain classes with **regions of feature space sparsity** — areas where data samples are rare, sparse, or poorly represented. These regions limit a model's ability to learn reliable decision boundaries, impairing generalization.
-
-Conventional augmentation approaches generate synthetic samples **uniformly** across the dataset, without explicitly addressing these sparse regions.
-
----
-
-## Method
-
-We propose a novel **targeted augmentation** approach that:
-
-- Operates on a **class-by-class basis**
-- Uses **L₁-norm Principal Component Analysis (PCA)** to characterize intra-class feature space geometry
-- Identifies **non-core (sparse) regions** and allocates synthetic samples preferentially to these areas
-
-The method automatically:
-
-1. Computes a **class-specific augmentation budget**
-2. Allocates synthetic samples — generated via multiple augmentation techniques — **in proportion to the degree of intra-class data scarcity**
+Key properties of the method include:
+- Targeted augmentation focused on sparse regions
+- Fully automated pipeline with no manual tuning required
+- Modular design supporting diffusion-based generation
+- Data-driven allocation based on intrinsic feature-space structure
 
 ---
 
-## Key Properties
+## Requirements
 
-| Property | Description |
-|---|---|
-|  **Targeted** | Focuses augmentation on sparse, underrepresented regions |
-|  **Automated** | No manual parameter tuning required |
-| **Modular** | Compatible with multiple synthetic data generation techniques |
-|  **Data-driven** | Budget and allocation derived entirely from data geometry |
+Python 3.10.x is required.
+
+Check your version:
+python --version
+
+Install dependencies:
+pip install -r requirements.txt
+
+---
+
+## Running the Code
+
+Run the pipeline using dataset names defined in config.yaml:
+
+python run_generic_ddpm_gan.py --dataset heart --config config.yaml  
+python run_generic_ddpm_gan.py --dataset cancer_cell --config config.yaml  
+python run_generic_ddpm_gan.py --dataset glioma --config config.yaml  
+
+To save output:
+
+python run_generic_ddpm_gan.py --dataset heart --config config.yaml > heart.log 2>&1
+
+To run all datasets:
+
+bash scripts/run_all.sh
+
+---
+
+## Configuration
+
+All parameters are defined in config.yaml. Each dataset has its own configuration block that controls data paths, model selection, scaling, and DDPM settings.
+
+Example:
+
+datasets:
+  heart:
+    data:
+      data_path: heart.csv
+      label_col: target
+    experiment:
+      models: [RF, DT]
+    scaling:
+      classifier: none
+      ddpm: minmax
+    ddpm:
+      train_steps: 800
+    models:
+      RF:
+        n_estimators: 250
+      DT:
+        max_depth: 4
+
+---
+
+## Hyperparameter Tuning
+
+Best performance is obtained by tuning parameters per dataset. Modify config.yaml and rerun the pipeline.
+
+Recommended ranges:
+
+LR: C = 0.1, 1.0, 10.0  
+SVM: C = 0.1 to 100, gamma = scale or auto  
+RF: n_estimators = 100 to 500  
+DT: max_depth = 3, 5, 8 or null  
+DDPM: increase train_steps (e.g., 800 to 2000), use minmax scaling  
+
+Each execution runs a single configuration. For grid search, use simple scripts or loops.
+
+---
+
+## Notes
+
+The pipeline performs targeted augmentation only and evaluates performance on outlier-only test data. Dataset CSV files must be present in the project directory or paths must be updated in config.yaml. The supporting modules are compiled, so Python 3.10.x is required.
 
 ---
 
 ## Results
 
-Extensive experiments on real-world datasets demonstrate that the proposed method **consistently improves classification performance** relative to:
-
-- Baseline (no augmentation)
-- Generic (uniform) augmentation strategies
-
-Gains are most pronounced in **data-sparse regions**.
+The method consistently improves classification performance compared to no augmentation and uniform augmentation approaches. Gains are most pronounced in sparse regions of the feature space.
 
 ---
 
 ## Citation
 
-> Coming soon.
+Coming soon.
