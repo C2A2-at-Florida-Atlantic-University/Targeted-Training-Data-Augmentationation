@@ -1,0 +1,43 @@
+Loading CSV: /mnt/beegfs/home/sshukla2020/Training_data_aug/targeted_aug_code/targeted_l1pca_tabddpm_package_v2/cancer_cell.csv
+Classifier scaling: none
+Loading CSV: /mnt/beegfs/home/sshukla2020/Training_data_aug/targeted_aug_code/targeted_l1pca_tabddpm_package_v2/cancer_cell.csv
+
+=== Data / ranks ===
+  Rows:         683
+  Features (d): 9
+  Rank range:   [1, 2, 3, 4, 5, 6, 7, 8]
+
+=== L1-PCA rank elbow + residual knee per class: WHOLE DATASET ===
+
+[L1-PCA] Class=2, rows=444
+  -> best_rank=5, core=397, outliers=47, thr=4.217009, angle_resid_deg=11.767901
+
+[L1-PCA] Class=4, rows=239
+  -> best_rank=6, core=191, outliers=48, thr=13.148929, angle_resid_deg=6.286796
+
+=== FINAL split ===
+  FINAL TRAIN size: 653
+  FINAL TEST outlier-only size: 30
+
+=== Min-outlier eligibility filter ===
+  MIN_OUTLIERS_PER_CLASS = 3
+  Class 2: TRAIN outliers=32 -> ELIGIBLE
+  Class 4: TRAIN outliers=33 -> ELIGIBLE
+
+Per-class max augmentation limit:
+  Class 2: limit=350
+  Class 4: limit=143
+
+=== Averaged metrics ===
+Dataset: cancer_cell | Generator: DDPM | Runs: 1 | Test: outlier-only
+| Scenario | Model | Accuracy | Macro-F1 | Macro-Recall |
+|---|---|---:|---:|---:|
+| targeted | LR | 0.900000 | 0.899889 | 0.900000 |
+| targeted | SVM | 0.966667 | 0.966630 | 0.966667 |
+| targeted | RF | 0.933333 | 0.933036 | 0.933333 |
+| targeted | DT | 0.900000 | 0.899889 | 0.900000 |
+================================================================================
+Running TARGETED only | dataset=cancer_cell | generator=DDPM | models=LR,SVM,RF,DT
+Scaling: classifier=none | ddpm=minmax
+Data: /mnt/beegfs/home/sshukla2020/Training_data_aug/targeted_aug_code/targeted_l1pca_tabddpm_package_v2/cancer_cell.csv | label_col=Class
+================================================================================

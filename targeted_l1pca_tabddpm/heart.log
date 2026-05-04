@@ -1,0 +1,42 @@
+Loading CSV: /mnt/beegfs/home/sshukla2020/Training_data_aug/targeted_aug_code/targeted_l1pca_tabddpm_package_v2/heart.csv
+Classifier scaling: none
+Loading CSV: /mnt/beegfs/home/sshukla2020/Training_data_aug/targeted_aug_code/targeted_l1pca_tabddpm_package_v2/heart.csv
+
+=== Data / ranks ===
+  Rows:         303
+  Features (d): 13
+  Rank range:   [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+=== L1-PCA rank elbow + residual knee per class: WHOLE DATASET ===
+
+[L1-PCA] Class=0, rows=138
+  -> best_rank=8, core=50, outliers=88, thr=7.292352, angle_resid_deg=4.962799
+
+[L1-PCA] Class=1, rows=165
+  -> best_rank=2, core=134, outliers=31, thr=86.278526, angle_resid_deg=48.738545
+
+=== FINAL split ===
+  FINAL TRAIN size: 266
+  FINAL TEST outlier-only size: 37
+
+=== Min-outlier eligibility filter ===
+  MIN_OUTLIERS_PER_CLASS = 3
+  Class 0: TRAIN outliers=61 -> ELIGIBLE
+  Class 1: TRAIN outliers=21 -> ELIGIBLE
+
+Per-class max augmentation limit:
+  Class 0: limit=0
+  Class 1: limit=103
+
+=== Averaged metrics ===
+Dataset: heart | Generator: DDPM | Runs: 1 | Test: outlier-only
+| Scenario | Model | Accuracy | Macro-F1 | Macro-Recall |
+|---|---|---:|---:|---:|
+| targeted | RF | 0.810811 | 0.788571 | 0.838889 |
+| targeted | DT | 0.756757 | 0.728163 | 0.770370 |
+
+================================================================================
+Running TARGETED only | dataset=heart | generator=DDPM | models=RF,DT
+Scaling: classifier=none | ddpm=minmax
+Data: /mnt/beegfs/home/sshukla2020/Training_data_aug/targeted_aug_code/targeted_l1pca_tabddpm_package_v2/heart.csv | label_col=target
+================================================================================

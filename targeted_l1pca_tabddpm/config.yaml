@@ -1,0 +1,161 @@
+# Targeted L1-PCA sparse-outlier augmentation pipeline
+# This package intentionally runs TARGETED Augmentation Pipeline
+# LR : Logistic Regression
+# SVM: Support Vector Machine with RBF kernel
+# RF : Random Forest  
+# DT : Decision Tree
+
+
+experiment:
+  num_runs: 1
+  base_random_state: 42
+  generators: [ddpm]          # allowed: ddpm, ctgan
+  models: [LR, SVM, RF, DT]   # allowed: LR, SVM, SVM_lin, RF, DT
+
+outlier_detection:
+  outlier_test_frac: 0.30
+  min_outliers_per_class: 3
+
+augmentation:
+  max_aug_mode: core_equal    # allowed: core_equal, fixed
+  max_non_core_aug_limit: 50
+
+scaling:
+  classifier: none            # allowed: standard, minmax, robust, none
+  ddpm: minmax                # allowed: minmax, standard, robust, none
+
+ddpm:
+  repo_dir: path to /tab-ddpm
+  device: auto
+  num_timesteps: 500
+  train_steps: 800
+  lr: 0.001
+  batch_size: 16
+  seed: 12345
+  round_decimals: 3
+
+ctgan:
+  epochs: 500
+  batch_size: 16
+  pac: 2
+  round_decimals: null
+
+# Global defaults. Dataset-specific sections below can override any model params.
+models:
+  LR:
+    max_iter: 3000
+    solver: lbfgs
+    C: 1.0
+    random_state: 42
+  SVM:
+    kernel: rbf
+    C: 1.0
+    gamma: scale
+  SVM_lin:
+    kernel: linear
+    C: 1.0
+  RF:
+    n_estimators: 200
+    bootstrap: false
+    random_state: 42
+  DT:
+    max_depth: 6
+    random_state: 42
+
+# Dataset-specific headers.
+# Run with: python run_generic_ddpm_gan.py --dataset cancer_cell --config config.yaml
+# Each dataset can override data path, label column, selected models, model params, DDPM params, scaling, etc.
+datasets:
+  cancer_cell:
+    data:
+      data_path: cancer_cell.csv
+      label_col: Class
+      dataset_tag: cancer_cell
+      drop_cols: []
+    experiment:
+      num_runs: 1
+      generators: [ddpm]
+      models: [LR, SVM, RF, DT]
+    scaling:
+      classifier: none
+      ddpm: minmax
+    ddpm:
+      num_timesteps: 500
+      train_steps: 800
+      lr: 0.001
+      batch_size: 16
+      seed: 12345
+      round_decimals: 3
+    models:
+      LR:
+        max_iter: 3000
+        solver: lbfgs
+        C: 10.0
+        random_state: 42
+     
+      SVM:
+        kernel: rbf
+        C: 10.0
+        gamma: scale
+      RF:
+        n_estimators: 200
+        bootstrap: false
+        random_state: 42
+      DT:
+        max_depth: 4
+        random_state: 42
+
+  heart:
+    data:
+      data_path: heart.csv
+      label_col: target
+      dataset_tag: heart
+      drop_cols: []
+    experiment:
+      num_runs: 1
+      generators: [ddpm]
+      models: [LR, SVM, RF, DT]
+    scaling:
+      classifier: minmax
+      ddpm: minmax
+    ddpm:
+      num_timesteps: 600
+      train_steps: 1000
+      lr: 0.001
+      batch_size: 16
+      seed: 12345
+    models:
+      LR:
+        max_iter: 5000
+        # solver: liblinear
+        # C: 1.0
+        random_state: 42
+      SVM:
+        kernel: rbf
+        C: 10.0
+        gamma: scale
+      RF:
+        n_estimators: 250
+        bootstrap: false
+        random_state: 42
+      DT:
+        max_depth: 4
+        random_state: 42
+
+  
+
+
+# should be run with: grid params to get best results. 
+# LR.C: [0.1, 1.0, 10.0]
+# LR.solver: [liblinear, lbfgs]
+
+# SVM.C: [0.1, 1.0, 10.0, 100.0]
+# SVM.gamma: [scale, auto]
+
+# RF.n_estimators: [100, 200, 500]
+# RF.bootstrap: [true, false]
+
+# DT.max_depth: [3, 5, 8, null]
+
+# ddpm.train_steps: [800, 1200, 2000]
+# scaling.ddpm: minmax
